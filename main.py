@@ -1,17 +1,13 @@
 from src.engine.file_management.encryption import Encryption
 from src.engine.file_management.file_IO import FileIO
+from src.engine.function.text_editor import Texteditor
 
 if __name__ == "__main__":
     Encryption = Encryption()
     key = Encryption.generate_key()
     FileIO = FileIO()
 
-    data = 'Hello there Hello there Hello there Hello there Hello there Hello there Hello there Hello there Hello ' \
-           'there Hello there Hello there Hello there Hello there Hello there Hello there Hello there Hello there ' \
-           'Hello there Hello there Hello there Hello there Hello there Hello there Hello there Hello there Hello ' \
-           'there Hello there Hello there Hello there Hello there Hello there Hello there Hello there Hello there ' \
-           'Hello there Hello there Hello there Hello there Hello there Hello there Hello there Hello there Hello ' \
-           'there Hello there Hello there Hello there Hello there Hello there Hello there Hello there Hello there '
+    data = 'Hello there'
 
     print(f'data: {data}')
     print(f'key: {key}')
@@ -24,3 +20,5 @@ if __name__ == "__main__":
     FileIO.write_encrypted_file_data(data, key, 'test2')
     decrypted_data = FileIO.read_encrypted_file_data(key, 'test2')
     print(f'file decrypted_data: {decrypted_data}')
+
+    Texteditor().editor_loop()

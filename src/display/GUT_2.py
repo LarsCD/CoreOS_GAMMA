@@ -28,13 +28,17 @@ class GUT:
     def draw_error(self, text):
         print(f"{self.settings['char']}{col.Fore.RED} > [ERROR]: {text}{self.rst}")
 
-    def click_text(self, text):
+    def click_text(self, text=""):
         self.draw_text(text)
         input()
 
     def click_error(self, text):
         self.draw_error(text)
         input()
+
+    def input_entry(self, text=""):
+        input_entry = input(f"{self.settings['char']} {text}> ")
+        return input_entry
 
     def draw_bar_text(self, text=""):
         if text == "":
