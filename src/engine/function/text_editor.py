@@ -26,7 +26,8 @@ class Texteditor:
 
             print(formatted_text)
 
-            self.GUT.draw_bar_text(f"[LINE: # ({self.current_loaded_data['line_count']} LINES) | \"/complete\" to save]")
+            self.GUT.draw_bar_text(
+                f"[LINE: # ({self.current_loaded_data['line_count']} LINES) | \"/complete\" to save]")
 
             entry = self.GUT.input_entry(text=f"[{self.editor_mode}] ")
             self.current_loaded_data["text_list"].append([f"{entry}"])
@@ -34,7 +35,7 @@ class Texteditor:
                 break
 
     @staticmethod
-    def format_str_to_list(self, string):
+    def format_str_to_list(string):  # TODO: Probs doesn't work > fix!
         string_list = string.strip().split('\n')
         return [string_list]
 
@@ -46,12 +47,12 @@ class Texteditor:
             # TODO: Fix the fact that one line is not covered by a 'char'
             formatted_string += string_line
 
-
         return formatted_string
 
     @staticmethod
     def update_editor_metadata(self):  # TODO: Update method to update line count etc.
-        pass
+        self.current_loaded_data["line_count"] = len(self.current_loaded_data["text_list"])
+        self.log(logging.DEBUG, "Updated \"line_count\" ")
 
     def import_text(self, data):  # TODO: Update method
         try:
