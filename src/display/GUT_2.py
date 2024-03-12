@@ -25,6 +25,9 @@ class GUT:
     def draw_text(self, text):
         print(f"{self.settings['char']} {text}")
 
+    def draw_warning(self, text):
+        print(f"{self.settings['char']}{col.Fore.LIGHTYELLOW_EX} > [WARNING]: {text}{self.rst}")
+
     def draw_error(self, text):
         print(f"{self.settings['char']}{col.Fore.RED} > [ERROR]: {text}{self.rst}")
 

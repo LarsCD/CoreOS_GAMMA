@@ -17,8 +17,43 @@ class Texteditor:
         }
         self.editor_mode = "ADD TEXT"
 
+
     def editor_loop(self):
+        # Apologies Lars in advance, this is probs going to be a shit method, fix or live with the consequences :3
+
+        def edit_mode(self: Texteditor):
+            # check if input valid
+            try:
+                line_index: int = int(self.GUT.input_entry('Input at what line?'))
+            except ValueError:
+                self.GUT.click_error('Line input must be of type: \'int\'')
+                return
+
+            # flag if line_index is valid input
+            if line_index-1 > len(self.current_loaded_data['text_list']) or line_index-1 < 0:
+                # line_index NOT valid
+                self.GUT.click_error(f'Line {line_index} does not exist')
+                return
+
+            try:
+                text_input: str = self.GUT.input_entry('')
+            except ValueError:
+                self.GUT.click_error('Text input must be of type: \'str\'')
+                return
+
+            # check if user wants to write to line
+            self.GUT.draw_warning(f'Are you sure you want to overwrite this line? (line: {line_index})')
+            # line_index + 1 because it's the number that shows up in the editor
+            user_input = self.GUT.input_entry('[y/N]')
+
+            if user_input == 'y' or user_input == 'Y' or user_input == 'yes' or user_input == 'Yes':
+                self.current_loaded_data['text_list'][line_index][0] = text_input
+            else:
+                return
+
+        # EDITOR LOOP
         while True:
+            self.update_editor_metadata(self)
             self.GUT.clear_screen()
             formatted_text = self.format_list_to_str(self.current_loaded_data["text_list"])
             self.GUT.draw_line()
@@ -27,12 +62,15 @@ class Texteditor:
             print(formatted_text)
 
             self.GUT.draw_bar_text(
-                f"[LINE: # ({self.current_loaded_data['line_count']} LINES) | \"/complete\" to save]")
+                f"[LINE: # ({self.current_loaded_data['line_count']} LINES) | \"/e\" to edit | \"/complete\" to save]")
 
             entry = self.GUT.input_entry(text=f"[{self.editor_mode}] ")
-            self.current_loaded_data["text_list"].append([f"{entry}"])
             if entry == "/complete":
                 break
+            elif entry == "/e":
+                edit_mode(self)
+            else:
+                self.current_loaded_data["text_list"].append([f"{entry}"])
 
     @staticmethod
     def format_str_to_list(string):  # TODO: Probs doesn't work > fix!
@@ -42,8 +80,8 @@ class Texteditor:
     def format_list_to_str(self, string_list):
         formatted_string: str = f""
 
-        for line in string_list:
-            string_line = f"{self.GUT.settings['char']} {line[0]}\n"
+        for i, line in enumerate(string_list):
+            string_line = f"{self.GUT.settings['char']} {str(f'{i+1}').zfill(3)} |{line[0]}\n"
             # TODO: Fix the fact that one line is not covered by a 'char'
             formatted_string += string_line
 

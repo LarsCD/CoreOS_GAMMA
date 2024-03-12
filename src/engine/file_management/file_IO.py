@@ -11,7 +11,7 @@ class FileIO:
     def __init__(self):
 
         self.log = DevLogger(FileIO).log
-        self.cwd = os.getcwd()
+        self.cwd = os.path.dirname(os.path.realpath(__file__))
         self.Encryption = Encryption()
 
     @staticmethod

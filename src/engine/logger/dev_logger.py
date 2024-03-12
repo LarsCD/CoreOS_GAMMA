@@ -12,14 +12,13 @@ logger_enabled = DEV_SETTINGS['logging_enabled']
 class DevLogger:
     def __init__(self, logging_class, log_level=logging.DEBUG, print_level=logging.INFO):
         self.logger_enabled = logger_enabled
-        self.cwd = os.getcwd()
+        self.cwd = os.path.dirname(os.path.realpath(__file__))
         self.logging_dir = DEV_SETTINGS['logging_dir']
 
         logging.basicConfig(level=print_level)
         logger_name = str(logging_class.__name__)
         log_file_path = str(
-            f"{self.cwd}/{self.logging_dir}/dev-log-{time_start.date()}-{time_start.time().hour}h-{time_start.time().minute}m-{time_start.time().second}s.txt")
-
+            f"{self.cwd}/logs/dev-log-{time_start.date()}-{time_start.time().hour}h-{time_start.time().minute}m-{time_start.time().second}s.txt")
         self.logger = logging.getLogger(logger_name)
         file_handler = logging.FileHandler(log_file_path)
         file_handler.setLevel(level=log_level)
