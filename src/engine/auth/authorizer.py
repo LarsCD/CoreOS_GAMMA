@@ -13,5 +13,6 @@ class Authorizer:
         self.cwd = dirname(dirname(dirname(dirname(abspath(__file__)))))
 
     def save_pass_key(self, key, filename):
-        self.FileIO.write_file(key, filename, path=AUTH_SETTINGS['auth_key_dir'], extension=AUTH_SETTINGS["file_extension"])
+        self.FileIO.write_file(key, filename, path=AUTH_SETTINGS['auth_key_dir'],
+                               extension=AUTH_SETTINGS["file_extension"])
         self.log(logging.INFO, f'saved {filename}{AUTH_SETTINGS["file_extension"]}')
