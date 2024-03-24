@@ -13,7 +13,8 @@ class Texteditor:
         self.current_loaded_data: dict = {
             "text_list": [["#TEST TEXT#"], ["#TEXT TEST#"]],
             "file_name": "testfile.cos",
-            "line_count": 2
+            "line_count": 2,
+            "saved_data": None,
         }
         self.editor_mode = "ADD TEXT"
 
@@ -88,6 +89,8 @@ class Texteditor:
             elif entry == "/i":
                 insert_mode(self)
                 return 0
+            elif entry == "/exit":
+                return -1
             elif entry == "/debug":
                 print(self.current_loaded_data)
             else:
@@ -104,18 +107,19 @@ class Texteditor:
             print(formatted_text)
 
             self.GUT.draw_bar_text(
-                f"[{self.current_loaded_data['line_count']} LINES | \"/e\" to edit | \"/i\" to insert | \"/s\" to save | \"/e\" to exit]")
+                f"[{self.current_loaded_data['line_count']} LINES | \"/e\" to edit | \"/i\" to insert | \"/s\" to "
+                f"save | \"/e\" to exit]")
 
             # manage text & commands input
             exit_code = command_manager(self)
 
             # exit loop break
             if exit_code == 1:
-                # save
-                break
-            if exit_code == 2:
-                # dont save
-                break
+                # exit and save
+                return self.current_loaded_data
+            if exit_code == -1:
+                # exit and dont save
+                return None
             # exit code 0 = keep loop going
 
     @staticmethod
@@ -142,6 +146,6 @@ class Texteditor:
         try:
             text_string = str(data["text"])
         except TypeError:
-            self.log(logging.ERROR, "import text string is not string")
+            self.log(logging.ERROR, "import text data is not data")
         else:
             self.current_loaded_data["text_list"].append([f"{text_string}"])

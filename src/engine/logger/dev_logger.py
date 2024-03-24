@@ -30,3 +30,5 @@ class DevLogger:
     def log(self, level, message):
         if self.logger_enabled:
             self.logger.log(level, message)
+
+# TODO: Fix double logging

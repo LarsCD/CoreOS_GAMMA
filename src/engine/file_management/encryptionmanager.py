@@ -2,6 +2,8 @@ import logging
 import os.path
 
 import base64
+import pickle
+
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
@@ -37,42 +39,39 @@ class EncryptionManager:
             key = Fernet.generate_key()
         return key
 
-    def encrypt_string(self, string, key):
+    def encrypt_data(self, data, key):
         """
-        Encrypt string using a provided key
+        Encrypt data using a provided key
         """
-        self.log(logging.DEBUG, f'encrypting string...')
+        self.log(logging.DEBUG, f'encrypting data...')
 
         encrypted_data = None
 
-        # try:
-        bytes_data = string.encode('utf-8')
         cipher_suite = Fernet(key)
-        encrypted_data = cipher_suite.encrypt(bytes_data)
-        # except Exception as e:
-            # self.log(logging.ERROR, f'problem with encrypting string: {e}')
-        # else:
-            # self.log(logging.DEBUG, f'successfully encrypted string')
+
+        if not isinstance(data, str):
+            data_bytes = pickle.dumps(data)
+            encrypted_data = cipher_suite.encrypt(data_bytes)
+        else:
+            bytes_data = data.encode('utf-8')
+            encrypted_data = cipher_suite.encrypt(bytes_data)
 
         return encrypted_data
 
     def decrypt_data(self, data, key):
         """
-        Decrypt string using a provided key
+        Decrypt data using a provided key
         """
 
-        self.log(logging.DEBUG, f'decrypting string...')
+        self.log(logging.DEBUG, f'decrypting data...')
 
         decrypted_data = None
 
-        # try:
         cipher_suite = Fernet(key)
         decrypted_data_raw = cipher_suite.decrypt(data)
-        decrypted_data = decrypted_data_raw.decode('utf-8')
-        # except Exception as e:
-            # print(e)
-            # self.log(logging.ERROR, f'problem with decrypting string: {e}')
-        # else:
-            # self.log(logging.DEBUG, f'successfully decrypted string')
+        try:
+            decrypted_data = decrypted_data_raw.decode('utf-8')
+        except UnicodeDecodeError:
+            decrypted_data = pickle.loads(decrypted_data_raw)
 
         return decrypted_data

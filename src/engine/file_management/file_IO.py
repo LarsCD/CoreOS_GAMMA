@@ -1,6 +1,7 @@
 import logging
 import os.path
 import pathlib
+import pickle
 from os.path import dirname, abspath
 
 from data.config.config_settings import DEFAULT_FILE_SETTINGS
@@ -20,9 +21,10 @@ class FileIO:
         check_bool = pathlib.Path(full_path).is_file()
         return check_bool
 
-    def write_file(self, data, output_file, path=DEFAULT_FILE_SETTINGS['file_path'], extension=DEFAULT_FILE_SETTINGS['file_extension']):
+    def write_file(self, data, output_file, path=DEFAULT_FILE_SETTINGS['file_path'],
+                   extension=DEFAULT_FILE_SETTINGS['file_extension']):
         """
-        Write string to file in default folder 'files'
+        Write data to file in default folder 'files'
 
         :param extension:
         :param data:
@@ -37,29 +39,23 @@ class FileIO:
 
         full_path = None
 
-        # try:
         file_path = os.path.join(path, output_file)
         full_path = f"{self.cwd}{file_path}{extension}"
         self.log(logging.DEBUG, f'full_path=\'{full_path}\'')
-        # except Exception as e:
-            # self.log(logging.ERROR, f'problem finding path for \'{output_file}\' to write to: {e}')
 
-        # try:
         read_setting = 'wb'
 
-        # check if data being written is of type byte or string
+        # check if data being written is of type byte or data
         if isinstance(data, str):
             read_setting = 'w'
 
         with open(full_path, read_setting) as f:
-            self.log(logging.DEBUG, f'writing string to \'{output_file}\'')
+            self.log(logging.DEBUG, f'writing data to \'{output_file}\'')
             f.write(data)
-        # except Exception as e:
-            # self.log(logging.ERROR, f'problem with writing string to \'{output_file}\': {e}')
 
     def read_file(self, input_file, path=DEFAULT_FILE_SETTINGS['file_path']):
         """
-        Read string from file in default folder 'files'
+        Read data from file in default folder 'files'
 
         :param input_file:
         :param path:
@@ -77,41 +73,36 @@ class FileIO:
         file_path = os.path.join(path, input_file)
         full_path = f"{self.cwd}{file_path}"
         self.log(logging.DEBUG, f'full_path=\'{full_path}\'')
-        # except Exception as e:
-            # self.log(logging.ERROR, f'problem finding path for \'{input_file}\' to read from: {e}')
 
         # try:
         with open(f"{full_path}.COS", 'rb') as f:
-            self.log(logging.DEBUG, f'reading string from \'{input_file}\'')
+            self.log(logging.DEBUG, f'reading data from \'{input_file}\'')
             data = f.read()
-        # except Exception as e:
-            # self.log(logging.ERROR, f'problem with reading string from \'{input_file}\': {e}')
 
         return data
 
     def write_encrypted_file_data(self, data, key, output_file, custom_path=None):
-        self.log(logging.INFO, f'writing encrypted string to \'{output_file}\'...')
+        self.log(logging.INFO, f'writing encrypted data to \'{output_file}\'...')
 
-        # check if string is datatype string
-        if type(data) is not str:
-            self.log(logging.ERROR, f'could not write string to \'{output_file}\': string type is not string')
-            return None
+        # check if data is datatype data
+        # if type(data) is not str:
+        #     self.log(logging.ERROR, f'could not write data to \'{output_file}\': data type is not data')
+        #     return None
 
-        encrypted_data = self.Encryption.encrypt_string(data, key)
-        # try:
+        encrypted_data = self.Encryption.encrypt_data(data, key)
         self.write_file(encrypted_data, output_file, path=custom_path)
-        # except Exception as e:
-            # self.log(logging.ERROR, f'could not write string to \'{output_file}\': {e}')
-        # else:
-            # self.log(logging.INFO, f'writing encrypted string to \'{output_file}\' successful! ')
 
     def read_encrypted_file_data(self, key, input_file, custom_path=None):
-        self.log(logging.INFO, f'reading encrypted string from \'{input_file}\'...')
+        self.log(logging.INFO, f'reading encrypted data from \'{input_file}\'...')
 
         raw_data = self.read_file(input_file, path=custom_path)
         decrypted_data = self.Encryption.decrypt_data(raw_data, key)
         if decrypted_data is None:
-            self.log(logging.ERROR, f'could not read string from \'{input_file}\'')
+            self.log(logging.ERROR, f'could not read data from \'{input_file}\'')
         else:
-            self.log(logging.INFO, f'reading encrypted string from \'{input_file}\' successful! ')
+            self.log(logging.INFO, f'reading encrypted data from \'{input_file}\' successful! ')
             return decrypted_data
+
+    def write_data_encrypted(self, data, output_file, path=DEFAULT_FILE_SETTINGS['file_path'],
+                             extension=DEFAULT_FILE_SETTINGS['file_extension']):
+        self.log(logging.INFO, f'writing encrypted data to \'{output_file}\'...')
