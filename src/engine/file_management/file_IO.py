@@ -53,7 +53,7 @@ class FileIO:
             self.log(logging.DEBUG, f'writing data to \'{output_file}\'')
             f.write(data)
 
-    def read_file(self, input_file, path=DEFAULT_FILE_SETTINGS['file_path']):
+    def read_file(self, input_file, path=DEFAULT_FILE_SETTINGS['file_path'], extension=DEFAULT_FILE_SETTINGS['file_extension']):
         """
         Read data from file in default folder 'files'
 
@@ -75,7 +75,7 @@ class FileIO:
         self.log(logging.DEBUG, f'full_path=\'{full_path}\'')
 
         # try:
-        with open(f"{full_path}.COS", 'rb') as f:
+        with open(f"{full_path}{extension}", 'rb') as f:
             self.log(logging.DEBUG, f'reading data from \'{input_file}\'')
             data = f.read()
 
