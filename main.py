@@ -33,8 +33,8 @@ if __name__ == "__main__":
     # decrypted_data_2 = FileIO.read_encrypted_file_data(key_2_pass, 'data')
     # print(f'file (data) decrypted_data: {decrypted_data_2}')
     #
-    # editor_data = Texteditor().editor_loop()
-    # FileIO.write_encrypted_file_data(editor_data, key_1_pass, 'test_editor_file')
+    editor_data = Texteditor().editor_loop()
+    FileIO.write_encrypted_file_data(editor_data, key_1_pass, 'test_editor_file')
     #
     # decrypted_data_text = FileIO.read_encrypted_file_data(key_2_pass, 'test_editor_file')
     # print(decrypted_data_text)
@@ -43,4 +43,3 @@ if __name__ == "__main__":
     check_key = EncryptionManager.generate_key(password=password)
     Authorizer.save_pass_key(check_key, 'check_password')
     is_password = Authorizer.check_password(password, 'check_password')
-

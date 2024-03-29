@@ -57,7 +57,6 @@ class Texteditor:
             if text_str_input is None:
                 return
 
-
             # check if user wants to write to line
             self.GUT.draw_warning(f'Are you sure you want to overwrite this line? (line: {line_index})')
             # line_index + 1 because it's the number that shows up in the editor

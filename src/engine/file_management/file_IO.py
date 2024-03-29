@@ -1,7 +1,6 @@
 import logging
 import os.path
 import pathlib
-import pickle
 from os.path import dirname, abspath
 
 from data.config.config_settings import DEFAULT_FILE_SETTINGS
@@ -11,7 +10,6 @@ from src.engine.file_management.encryptionmanager import EncryptionManager
 
 class FileIO:
     def __init__(self):
-
         self.log = DevLogger(FileIO).log
         self.cwd = dirname(dirname(dirname(dirname(abspath(__file__)))))
         self.Encryption = EncryptionManager()
@@ -69,25 +67,17 @@ class FileIO:
         full_path = None
         data = None
 
-        # try:
         file_path = os.path.join(path, input_file)
         full_path = f"{self.cwd}{file_path}"
         self.log(logging.DEBUG, f'full_path=\'{full_path}\'')
 
-        # try:
         with open(f"{full_path}{extension}", 'rb') as f:
             self.log(logging.DEBUG, f'reading data from \'{input_file}\'')
             data = f.read()
-
         return data
 
     def write_encrypted_file_data(self, data, key, output_file, custom_path=None):
         self.log(logging.INFO, f'writing encrypted data to \'{output_file}\'...')
-
-        # check if data is datatype data
-        # if type(data) is not str:
-        #     self.log(logging.ERROR, f'could not write data to \'{output_file}\': data type is not data')
-        #     return None
 
         encrypted_data = self.Encryption.encrypt_data(data, key)
         self.write_file(encrypted_data, output_file, path=custom_path)
@@ -102,7 +92,3 @@ class FileIO:
         else:
             self.log(logging.INFO, f'reading encrypted data from \'{input_file}\' successful! ')
             return decrypted_data
-
-    def write_data_encrypted(self, data, output_file, path=DEFAULT_FILE_SETTINGS['file_path'],
-                             extension=DEFAULT_FILE_SETTINGS['file_extension']):
-        self.log(logging.INFO, f'writing encrypted data to \'{output_file}\'...')
