@@ -1,0 +1,3 @@
+[INFO][2024-08-06 09:35:51,806]: Authorizer > saved check_password.KEY
+[INFO][2024-08-06 09:35:51,806]: Authorizer > checking password
+[INFO][2024-08-06 09:35:51,854]: Authorizer > password correct

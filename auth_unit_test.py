@@ -12,3 +12,4 @@ if __name__ == "__main__":
     check_key = EncryptionManager.generate_key(password=password)
     Authorizer.save_pass_key(check_key, 'check_password')
     is_password = Authorizer.check_password(password, 'check_password')
+    input()

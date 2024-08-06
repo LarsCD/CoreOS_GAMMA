@@ -16,4 +16,6 @@ if __name__ == "__main__":
     FileIO.write_encrypted_file_data(editor_data, key_1_pass, 'test_editor_file')
 
     loaded_editor_data = FileIO.read_encrypted_file_data(key_1_pass, 'test_editor_file')
-    Texteditor().load_textlist_from_file(loaded_editor_data)
+    EDITOR = Texteditor()
+    EDITOR.load_textlist_from_file(loaded_editor_data)
+    EDITOR.editor_loop()
