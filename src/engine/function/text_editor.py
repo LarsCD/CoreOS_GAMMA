@@ -2,6 +2,7 @@ import logging
 
 from src.engine.logger.dev_logger import DevLogger
 from src.display.GUT_2 import GUT
+from src.engine.file_management.file_IO import FileIO
 
 
 class Texteditor:
@@ -18,9 +19,22 @@ class Texteditor:
         }
         self.editor_mode = "ADD TEXT"
 
+    def load_textlist_from_file(self, loaded_editor_data):
+        # check if user wants to write to line
+        self.GUT.draw_warning(f'Are you sure you want to load this data? (data: {loaded_editor_data["file_name"]})')
+        # line_index + 1 because it's the number that shows up in the editor
+        user_input = self.GUT.input_entry('[Y/n]')
+
+        if user_input == 'n' or user_input == 'N' or user_input == 'no' or user_input == 'No':
+            return
+        else:
+            self.current_loaded_data = loaded_editor_data
+
+
     def editor_loop(self):
         # Apologies Lars in advance, this is probs going to be a shit method, fix or live with the consequences :3
-
+        # Update: who made this mess...
+        # TODO: Bro succes man...
         def line_index_input(text='Input at line', index_mode=False):
             try:
                 line_index: int = int(self.GUT.input_entry(text))
@@ -111,6 +125,9 @@ class Texteditor:
 
             # manage text & commands input
             exit_code = command_manager(self)
+
+            # TODO: why tf is command manager not integrated
+            #  with exit_code and just dumped into the loop?? > FIX!!
 
             # exit loop break
             if exit_code == 1:

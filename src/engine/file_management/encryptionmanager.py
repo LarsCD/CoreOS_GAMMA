@@ -39,7 +39,7 @@ class EncryptionManager:
             key = Fernet.generate_key()
         return key
 
-    def encrypt_data(self, data, key):
+    def encrypt_data(self, data, key) -> bytes:
         """
         Encrypt data using a provided key
         """
@@ -68,7 +68,7 @@ class EncryptionManager:
         decrypted_data = None
 
         cipher_suite = Fernet(key)
-        decrypted_data_raw = cipher_suite.decrypt(data)
+        decrypted_data_raw = cipher_suite.decrypt(data) # TODO: something goes wrong when decrypting the raw data > find the problem
         try:
             decrypted_data = decrypted_data_raw.decode('utf-8')
         except UnicodeDecodeError:
