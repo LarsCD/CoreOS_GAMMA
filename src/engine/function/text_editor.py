@@ -1,35 +1,45 @@
+import datetime
 import logging
+import time
 
 from src.engine.logger.dev_logger import DevLogger
 from src.display.GUT_2 import GUT
-from src.engine.file_management.file_IO import FileIO
 
 
-class Texteditor:
+class Text_Editor:
     def __init__(self):
         # preferences
-        self.log = DevLogger(Texteditor).log
+        self.log = DevLogger(Text_Editor).log
         self.GUT = GUT()
 
         self.current_loaded_data: dict = {
-            "text_list": [["#TEST TEXT#"], ["#TEXT TEST#"]],
+            "text_list": [],
             "file_name": "testfile.cos",
-            "line_count": 2,
+            "line_count": 0,
             "saved_data": None,
+            "saved_time": 0,
+            "file_location": ""
         }
         self.editor_mode = "ADD TEXT"
+        self.update_save_time()
 
-    def load_textlist_from_file(self, loaded_editor_data):
-        # check if user wants to write to line
-        self.GUT.draw_warning(f'Are you sure you want to load this data? (data: {loaded_editor_data["file_name"]})')
-        # line_index + 1 because it's the number that shows up in the editor
-        user_input = self.GUT.input_entry('[Y/n]')
-
-        if user_input == 'n' or user_input == 'N' or user_input == 'no' or user_input == 'No':
-            return
+    def load_text_data(self, loaded_editor_data):
+        if loaded_editor_data == None:
+            self.GUT.click_error("Loaded data could not be processed: NoneType")
         else:
-            self.current_loaded_data = loaded_editor_data
+            # check if user wants to write to line
+            # file_size = # TODO: Add
+            self.GUT.draw_warning(f'Are you sure you want to load this data? (data: {self.current_loaded_data["file_name"]})')
+            # line_index + 1 because it's the number that shows up in the editor
+            user_input = self.GUT.input_entry('[Y/n]')
 
+            if user_input == 'n' or user_input == 'N' or user_input == 'no' or user_input == 'No':
+                return
+            else:
+                self.current_loaded_data = loaded_editor_data
+
+    def update_save_time(self):
+        self.current_loaded_data["saved_time"] = time.time()
 
     def editor_loop(self):
         # Apologies Lars in advance, this is probs going to be a shit method, fix or live with the consequences :3
@@ -52,7 +62,7 @@ class Texteditor:
             else:
                 return line_index
 
-        def text_input(text=''):
+        def text_input(self, text=''):
             try:
                 text_str_input: str = self.GUT.input_entry(text)
             except ValueError:
@@ -61,13 +71,13 @@ class Texteditor:
             else:
                 return text_str_input
 
-        def edit_mode(self: Texteditor):
+        def edit_mode():
             # check if input valid
             line_index: int = line_index_input()
             if line_index is None:
                 return
 
-            text_str_input: str = text_input()
+            text_str_input: str = text_input(self)
             if text_str_input is None:
                 return
 
@@ -81,26 +91,26 @@ class Texteditor:
             else:
                 self.current_loaded_data['text_list'][line_index][0] = text_str_input
 
-        def insert_mode(self: Texteditor):
+        def insert_mode():
             line_index: int = line_index_input(text="Insert at line")
             if line_index is None:
                 return
 
-            text_str_input: str = text_input()
+            text_str_input: str = text_input(self)
             if text_str_input is None:
                 return
 
             self.current_loaded_data['text_list'].insert(line_index, [text_str_input])
 
-        def command_manager(self: Texteditor):
+        def command_manager(self: Text_Editor):
             entry = self.GUT.input_entry(text=f"")
             if entry == "/s":
                 return 1
             elif entry == "/e":
-                edit_mode(self)
+                edit_mode()
                 return 0
             elif entry == "/i":
-                insert_mode(self)
+                insert_mode()
                 return 0
             elif entry == "/exit":
                 return -1
@@ -120,10 +130,10 @@ class Texteditor:
             print(formatted_text)
 
             self.GUT.draw_bar_text(
-                f"[{self.current_loaded_data['line_count']} LINES | \"/e\" to edit | \"/i\" to insert | \"/s\" to "
-                f"save | \"/e\" to exit]")
+                f"[{self.current_loaded_data['line_count']} LINES | \"/e\": edit | \"/i\": insert | \"/s\": "
+                f"save | \"/exit\": exit]")
 
-            # manage text & commands input
+            # ==============================[EXIT CODE]=================================
             exit_code = command_manager(self)
 
             # TODO: why tf is command manager not integrated
@@ -135,7 +145,19 @@ class Texteditor:
                 return self.current_loaded_data
             if exit_code == -1:
                 # exit and dont save
-                return None
+                time_delta = time.time() - self.current_loaded_data["saved_time"]
+                time_stamp = datetime.datetime.utcfromtimestamp(time_delta).strftime('%D:%H:%M:%S')
+                self.GUT.draw_warning(f'Are you sure you want exit without saving? (last saved: {time_stamp} ago)')
+                # line_index + 1 because it's the number that shows up in the editor
+                user_input = self.GUT.input_entry('[N/y]')
+
+                if user_input == 'y' or user_input == 'Y' or user_input == 'yes' or user_input == 'Yes':
+                    self.update_save_time()
+                    self.current_loaded_data["text_list"] = []
+                    return self.current_loaded_data
+                else:
+                    pass
+
             # exit code 0 = keep loop going
 
     @staticmethod
