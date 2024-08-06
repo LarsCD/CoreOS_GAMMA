@@ -68,7 +68,7 @@ class EncryptionManager:
         decrypted_data = None
 
         cipher_suite = Fernet(key)
-        decrypted_data_raw = cipher_suite.decrypt(data) # TODO: something goes wrong when decrypting the raw data > find the problem
+        decrypted_data_raw = cipher_suite.decrypt(data)
         try:
             decrypted_data = decrypted_data_raw.decode('utf-8')
         except UnicodeDecodeError:
